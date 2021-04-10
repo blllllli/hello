@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>摸底作业</title>
+		<script src="vue.js" type="text/javascript" charset="UTF-8"></script>
+		<link href="1.css" rel="stylesheet" type="text/css"/>
+	</head>
+	<body>
+		<div id="up">
+			<img src="../image/logo.png" width="120" id="image"/>
+		</div>
+		
+		<div id="down">
+			<p id="name">
+				大宝贝助手
+			</p>
+			<p id="filename">{{filename}}</p>
+			
+			<input type="file" name="file" id="b1" multiple="multiple" @change="choose($event)"/>
+			
+			<div id="b5">
+			<label for="b1" id="btn">选择文件</label>	
+			</div>
+			
+			<!-- <div id="b4">
+				<div id="button1">
+				<button id="b3">选择文件</button>
+				</div>
+				<div id="button11">
+			    <input type="file" name="file" id="b1"  @change="choose()" />	
+			    </div>
+			</div> -->
+			
+			
+			<div id="button2">
+			<button id="b2" v-on:click="download">上传文件</button>	
+			</div>
+			
+
+		</div>
+		
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script>
+			var v1=new Vue({
+				el:'#down',
+				data:{
+					filename:"选择要上传的文件",
+					file:'',
+					files:''
+				},
+				methods:{
+					choose:function(e){
+						// event.preventDefault();
+						this.files=e.target.files;
+					    this.file=e.target.files[0];
+						this.filename=this.file.name;
+						console.log(this.file.name);
+						console.log(this.files.length);
+					},
+					download:function(){
+						// console.log(this.files.length);
+						let formdata=new FormData();
+						for(var i=0;i<this.files.length;i++)
+						{
+							formdata.append('files',this.files[i]);
+						}
+						var config={
+							onUploadProgress:ProgressEvent=>{
+								var complete=(ProgressEvent.loaded/ProgressEvent.total*100|0)+'%';
+							}
+						}
+						
+					axios.post('',formdata,config,{withCredentials:true}).then(res=>{
+						if(res.data.status=='success')
+						{
+							console.log("上传成功");
+						}
+					}).catch(err=>{
+						console.log(err);
+					})
+						
+					}
+				}
+			})
+		</script>
+	</body>
+</html>
